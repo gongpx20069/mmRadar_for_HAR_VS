@@ -69,7 +69,7 @@ PointNet核心思想：
 
 其中，$h$为简单神经网络（线性变换+点卷积+MLP），g为对称函数，可以用MaxPool、MeanPool、SumPool等操作，在论文中使用的是Maxpool。
 
-![image-20201112170504032](md_img\image-20201112170504032.png)
+![image-20201112170504032](image-20201112170504032.png)
 
 #### 3.1 PointNet++
 
