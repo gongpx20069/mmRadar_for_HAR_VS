@@ -87,9 +87,35 @@ PointNet架构主要是set abstraction操作，而这个操作分为三步：
 
 
 
-#### 3.3 Transformer
+#### 3.3 Attention
 
+> 深度学习中的注意力可以被广泛地理解为表示重要性的权重向量。为了推测或判断一个元素，例如图像中的像素或句子中的单词，我们使用注意力权重来估计其他元素与其相关的强度，并将由注意力权重加权的值的总和作为计算最终目标的特征。
 
+Attention主要分为如下两步（很像是图像处理中权重不一致的Pooling操作）：
+
+- Step 1：计算其他元素与待预测元素的相关性权重；
+- Step 2：根据相关性权重对其他元素进行加权求和；
+
+<img src="D:\Homework\毫米波雷达行为识别\md_img\image-20201113154119460.png" alt="image-20201113154119460" style="zoom: 50%;" />
+
+Attention的公式为：
+$$
+Attention(Q, K, V) = softmax(\frac {QK^T}{\sqrt{d_k}})V
+$$
+其中，Q，K，V全部来自于mlp的提取特征。为了更好地理解Q(Query)，K(Key)，V(Value)，我们可以将Q理解为想要查询的词（比如为了预测$y_i$，我们可以将已经预测好的$y_{i-1}$作为Q），K则是当前输入的特征向量（比如为了预测$y_i$，我们可以将当前$x_i$的隐含层$h_i$作为K（多个值）），V则是当前输入的另一个特征向量（比如为了预测$y_i$，我们可以将V=K）。那么在Seq2Seq的案例中，我们的attention 的公式可以表示为：
+$$
+c_i = \sum a_{i,i}h_i
+$$
+其中：
+$$
+a_{i,i} = align(y_i,h_i)=\frac {exp(score(s_{i-1},h_i))}{\sum \nolimits_{j=0}^{n} exp(score(s_{i-1},h_j))}
+$$
+
+#### 3.4 Transformer
+
+![image-20201113160920359](D:\Homework\毫米波雷达行为识别\md_img\image-20201113160920359.png)
+
+Transformer结构如上图，在Multi-Head Attention的模块，三个分叉分别为K，V，Q。当K，V，Q全部来自于同一个张量时，我们称之为Self-Attention，当Q来自于已经预测好的$y_{i-1}$时，这时，我们称之为Encoder-Decoder Attention。
 
 ### 4. 代码
 
@@ -136,4 +162,71 @@ Test Accuracy 86.9700%
 - 没有显式的局部信息获取；
 - 点云本质具有set的性质，本身是无序信息，而图像（立体场景）是有序信息；
 - 速度信息未考虑。
+
+
+
+#### 4.1 HAR/code_v2
+
+这一版的代码主要使用了PointNet和STN以及BLSTM组合的结构，没有使用点云体素化，而是使用了(batch_size, 60, 42, 3)这样占用空间很小，处理很快的数据结构。最终得到的效果如下图（前50个epoch的学习率为0.00001，51-72的学习率为0.000001）：
+
+```
+epoch:50	 epoch loss:137.8508
+Test Accuracy 91.8024%
+epoch:51	 epoch loss:137.8264
+Test Accuracy 91.7462%
+epoch:52	 epoch loss:137.8304
+Test Accuracy 92.0270%
+epoch:53	 epoch loss:137.8096
+Test Accuracy 92.7007%
+epoch:54	 epoch loss:137.7618
+Test Accuracy 91.9708%
+epoch:55	 epoch loss:137.7401
+Test Accuracy 92.1112%
+epoch:56	 epoch loss:137.7477
+Test Accuracy 92.0550%
+epoch:57	 epoch loss:137.7485
+Test Accuracy 91.1286%
+epoch:58	 epoch loss:137.7491
+Test Accuracy 91.2970%
+epoch:59	 epoch loss:137.7663
+Test Accuracy 91.6901%
+epoch:60	 epoch loss:137.7136
+Test Accuracy 92.1393%
+epoch:61	 epoch loss:137.7390
+Test Accuracy 91.4655%
+epoch:62	 epoch loss:137.7053
+Test Accuracy 91.3812%
+epoch:63	 epoch loss:137.7313
+Test Accuracy 90.5671%
+epoch:64	 epoch loss:137.7269
+Test Accuracy 91.7743%
+epoch:65	 epoch loss:137.7476
+Test Accuracy 91.2970%
+epoch:66	 epoch loss:137.7277
+Test Accuracy 91.0444%
+epoch:67	 epoch loss:137.8045
+Test Accuracy 91.6901%
+epoch:68	 epoch loss:137.7187
+Test Accuracy 92.3077%
+epoch:69	 epoch loss:137.7257
+Test Accuracy 93.3745%
+epoch:70	 epoch loss:137.7416
+Test Accuracy 92.0831%
+epoch:71	 epoch loss:137.6977
+Test Accuracy 91.4935%
+epoch:72	 epoch loss:137.7179
+Test Accuracy 92.0550%
+epoch:73	 epoch loss:137.6846
+Test Accuracy 92.1393%
+epoch:74	 epoch loss:137.7253
+Test Accuracy 91.4935%
+epoch:75	 epoch loss:137.6949
+Test Accuracy 92.1393%
+epoch:76	 epoch loss:137.6889
+Test Accuracy 92.3077%
+epoch:77	 epoch loss:137.6856
+Test Accuracy 91.5497%
+epoch:78	 epoch loss:137.7148
+Test Accuracy 92.3077%
+```
 
