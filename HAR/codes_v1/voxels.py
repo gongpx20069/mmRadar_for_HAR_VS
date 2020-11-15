@@ -1,8 +1,8 @@
 
 from MyDataset import LmdbData
 
-parent_dir = './Data/Train'
-parent_dir2 = './Data/Test'
+parent_dir = '../Data/Train'
+parent_dir2 = '../Data/Test'
 sub_dirs=['boxing','jack','jump','squats','walk']
 
 
