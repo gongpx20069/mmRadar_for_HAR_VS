@@ -113,7 +113,7 @@ $$
 
 #### 3.4 Transformer
 
-![image-20201113160920359](D:\Homework\毫米波雷达行为识别\md_img\image-20201113160920359.png)
+![image-20201113160920359](md_img\image-20201113160920359.png)
 
 Transformer结构如上图，在Multi-Head Attention的模块，三个分叉分别为K，V，Q。当K，V，Q全部来自于同一个张量时，我们称之为Self-Attention，当Q来自于已经预测好的$y_{i-1}$时，这时，我们称之为Encoder-Decoder Attention。
 
@@ -169,7 +169,7 @@ Test Accuracy 86.9700%
 
 这一版的代码主要使用了PointNet和STN以及BLSTM组合的结构，没有使用点云体素化，而是使用了(batch_size, 60, 42, 3)这样占用空间很小，处理很快的数据结构。最终得到的效果如下图（前50个epoch的学习率为0.00001，51-72的学习率为0.000001）：
 
-```
+```python
 epoch:50	 epoch loss:137.8508
 Test Accuracy 91.8024%
 epoch:51	 epoch loss:137.8264
