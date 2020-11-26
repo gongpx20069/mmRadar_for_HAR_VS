@@ -36,7 +36,43 @@ $$
 
 ### 3. 相关工作
 
-#### 3.1 PointNet
+#### 3.1 Spatial Transformer Networks (STN)
+
+![image-20201117161124877](md_img\image-20201117161124877.png)
+
+STN由三部分组成：
+
+- Localisation Network: Localisation network: 接受的输入特征图为$U \in \mathbb{R}^{H \times W \times C}$，输出为$\theta$，也就是仿射（透视）变换的变换矩阵；
+
+- Grid Generate: 这个G是原始的图像的位置，$T_{\theta}(G)$则是的变换后的图像，原图乘以变换矩阵；
+  $$
+  \left[ 
+  \begin{matrix} 
+  x_i^s \\ 
+  y_i^s \\ 
+  \end{matrix} 
+  \right]
+  =
+  T_{\theta}(G_i)=
+  \left[ 
+  \begin{matrix} 
+  {\theta}_{11} & {\theta}_{12} & {\theta}_{13} \\ 
+  {\theta}_{21} & {\theta}_{22} & {\theta}_{23} \\ 
+  \end{matrix} 
+  \right]
+  \left[ 
+  \begin{matrix} 
+  x_i^t \\ 
+  y_i^t \\ 
+  1 \\
+  \end{matrix} 
+  \right]
+  $$
+  其中$(x_i^s,y_i^s)$指的是正正的图像，而$(x_i^t,y_i^t)$指的是旋转平移的图像。
+
+- Sampler: 采样器根据$T_{\theta}(G)$中的坐标位置，在原始图中采样，将U中的像素复制到目标图V中。
+
+#### 3.2 PointNet
 
 点云一般有如下特征：
 
@@ -66,12 +102,16 @@ PointNet核心思想：
   $$
   f({x_1,...,x_n}) \approx g(h(x_1),...,h(x_n))
   $$
+  
+- 
 
 其中，$h$为简单神经网络（线性变换+点卷积+MLP），g为对称函数，可以用MaxPool、MeanPool、SumPool等操作，在论文中使用的是Maxpool。
 
 ![image-20201112170504032](md_img\image-20201112170504032.png)
 
-#### 3.2 PointNet++
+**注意：PointNet代码里的STN3d和STNkd指的是原STN论文中的第一步(Localisation Network: Localisation network)**
+
+#### 3.3 PointNet++
 
 在PointNet++是PointNet的扩展，为弥补PointNet没有考虑**点云相互作用**的的问题，因此提出的PointNet++。
 
@@ -87,7 +127,7 @@ PointNet架构主要是set abstraction操作，而这个操作分为三步：
 
 
 
-#### 3.3 Attention
+#### 3.4 Attention
 
 > 深度学习中的注意力可以被广泛地理解为表示重要性的权重向量。为了推测或判断一个元素，例如图像中的像素或句子中的单词，我们使用注意力权重来估计其他元素与其相关的强度，并将由注意力权重加权的值的总和作为计算最终目标的特征。
 
@@ -96,7 +136,7 @@ Attention主要分为如下两步（很像是图像处理中权重不一致的Po
 - Step 1：计算其他元素与待预测元素的相关性权重；
 - Step 2：根据相关性权重对其他元素进行加权求和；
 
-<img src="D:\Homework\毫米波雷达行为识别\md_img\image-20201113154119460.png" alt="image-20201113154119460" style="zoom: 50%;" />
+<img src="md_img\image-20201113154119460.png" alt="image-20201113154119460" style="zoom: 50%;" />
 
 Attention的公式为：
 $$
@@ -104,18 +144,33 @@ Attention(Q, K, V) = softmax(\frac {QK^T}{\sqrt{d_k}})V
 $$
 其中，Q，K，V全部来自于mlp的提取特征。为了更好地理解Q(Query)，K(Key)，V(Value)，我们可以将Q理解为想要查询的词（比如为了预测$y_i$，我们可以将已经预测好的$y_{i-1}$作为Q），K则是当前输入的特征向量（比如为了预测$y_i$，我们可以将当前$x_i$的隐含层$h_i$作为K（多个值）），V则是当前输入的另一个特征向量（比如为了预测$y_i$，我们可以将V=K）。那么在Seq2Seq的案例中，我们的attention 的公式可以表示为：
 $$
-c_i = \sum a_{i,i}h_i
+s_i = \sum a_{i,i}h_i
 $$
 其中：
 $$
 a_{i,i} = align(y_i,h_i)=\frac {exp(score(s_{i-1},h_i))}{\sum \nolimits_{j=0}^{n} exp(score(s_{i-1},h_j))}
 $$
 
-#### 3.4 Transformer
+#### 3.5 Transformer
 
 ![image-20201113160920359](md_img\image-20201113160920359.png)
 
 Transformer结构如上图，在Multi-Head Attention的模块，三个分叉分别为K，V，Q。当K，V，Q全部来自于同一个张量时，我们称之为Self-Attention，当Q来自于已经预测好的$y_{i-1}$时，这时，我们称之为Encoder-Decoder Attention。
+
+#### 3.5 mID
+
+这个算法是一个非常好的追踪算法，一共需要三个步骤，如下图。为了捕捉连续的点云来追踪和识别一个人，我们需要一个有效的时间关联检测，以及校正和预测传感器噪声。我们从每一帧创建并维护目标检测轨迹。新的轨迹将由目标检测创建，该轨迹要么来自于第一个传入帧，要么来自无法与现有轨迹关联的对象检测（使用Hungarian Algorithm来进行帧间对象关联）。**如果一个追踪对象在$D$个连续帧中未被检测到，我们将该轨迹标记为非活动，并将其从后续关联中排除。最后，我们应用Kalman Filter来预测和校正轨迹。**
+
+<img src="md_img/image-20201125231621185.png" alt="image-20201125231621185" style="zoom: 50%;" />
+
+- DBScan: E=0.05领域是指给定点半径为E的区域，如果给定点E领域内的样本点数大于等于MinPts=20，则该点为核心点。在这篇论文中，距离计算公式如下：
+  $$
+  D(p^i,p^j)=(p^i_x-p^j_x)^2+(p^i_y-p^j_y)^2+\alpha*(p^i_z-p^j_z)^2
+  $$
+  其中，$\alpha = 0.25$，因为在作者的观察中，z轴方向（人的身高）往往会有很多的离散点，对于目标检测并没有用（噪声）。
+
+- Hungarian Algorithm: 对于两帧图片中找到的可能的人，我们需要进行关联（二分图最大匹配）。需要的算法为**匈牙利算法或者K-M算法**。
+- Kalman Filter: 使用
 
 ### 4. 代码
 
