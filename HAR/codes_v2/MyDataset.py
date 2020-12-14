@@ -1,3 +1,5 @@
+import random
+
 import lmdb
 from torch.utils.data import Dataset, DataLoader
 import numpy as np
@@ -5,7 +7,10 @@ import torch
 import pickle
 
 class MyDataset(Dataset):
-    def __init__(self, data_dir, transform=None):
+    def __init__(self, data_dir, transform=None, padding='repeat', extra=True):
+        # padding: {repeat, zero}
+        self.padding=padding
+        self.extra=extra # feature including range, velocity... if set True
         self.data_dir = data_dir
         self.transform = transform
         self.lmdbData=LmdbData(data_dir)
@@ -17,17 +22,29 @@ class MyDataset(Dataset):
 
     def __getitem__(self, idx):
         x,y=self.lmdbData.get(idx)
-        #x: (60, k, 3)
-        #y: label 0-4
-        for i,frame in enumerate(x):
-            frame.extend([[self.padding_value]*3 for i in range(self.paddingto-len(frame))])
-        x=np.asarray(x)
+        # x: (60, k, 3)  or (60,k,8)
+        # y: label 0-4
+        data=np.zeros((len(x),self.paddingto,8))
+        for i, frame in enumerate(x):
+            if self.padding=='zero':
+                frame.extend([[self.padding_value] * 8 for i in range(self.paddingto - len(frame))])
+                data[i]=np.array(frame)
+            elif self.padding=='repeat':
+                ids=list(range(len(frame)))
+                pad_ids=[random.choice(ids) for j in range(self.paddingto - len(frame))]
+                data[i,:len(frame)]=np.array(frame)
+                data[i,len(frame):]=data[i,pad_ids]
+            else:
+                print('wrang padding type!')
+                exit(0)
+        if not self.extra:
+            data=data[:,:,:3]
         if self.transform:
-            x=self.transform(x)
+            data=self.transform(data)
         else:
-            x=torch.tensor(x).float()
-        y=torch.tensor(y).long()
-        return x, y
+            data=torch.tensor(data).float()
+        label=torch.tensor(y).long()
+        return data, label
 
 class LmdbData:
     def __init__(self,dir,map_size = 1):

@@ -1,4 +1,3 @@
-
 from MyDataset import LmdbData
 import os
 import numpy as np
@@ -28,6 +27,12 @@ def parse_file(path):
     xs=[]
     ys=[]
     zs=[]
+    ranges=[]
+    velocities=[]
+    doppler_bins=[]
+    bearings=[]
+    intensities=[]
+
     len_max_min=[0,1e10]
     frame_id = -1
     frame_ids = []
@@ -42,9 +47,19 @@ def parse_file(path):
             ys.append(wordlist[i+1])
         if wordlist[i] == "z:":
             zs.append(wordlist[i+1])
+        if wordlist[i] == "range:":
+            ranges.append(wordlist[i+1])
+        if wordlist[i] == "velocity:":
+            velocities.append(wordlist[i+1])
+        if wordlist[i] == "doppler_bin:":
+            doppler_bins.append(wordlist[i+1])
+        if wordlist[i] == "bearing:":
+            bearings.append(wordlist[i+1])
+        if wordlist[i] == "intensity:":
+            intensities.append(wordlist[i+1])
     sequence = [[] for i in range(frame_id+1)]  # elements are frames
     for i in range(len(xs)):
-        sequence[frame_ids[i]].append([float(xs[i]),float(ys[i]),float(zs[i])])
+        sequence[frame_ids[i]].append([float(xs[i]),float(ys[i]),float(zs[i]),float(ranges[i]),float(velocities[i]),float(doppler_bins[i]),float(bearings[i]),float(intensities[i])])
     for frame in sequence:
         len_max_min=[max(len_max_min[0],len(frame)),min(len_max_min[1],len(frame))]
     data=[]
@@ -64,8 +79,8 @@ sub_dirs=['boxing','jack','jump','squats','walk']
 
 
 if __name__=="__main__":
-    lmdbData_train=LmdbData('./Data/lmdbData_train',map_size = 1)
-    lmdbData_test = LmdbData('./Data/lmdbData_test', map_size=1)
+    lmdbData_train=LmdbData('./Data/lmdbData_train',map_size = 2)
+    lmdbData_test = LmdbData('./Data/lmdbData_test', map_size=2)
     len_max_min = [0, 1e10]
     for sub_dir in sub_dirs:
         len_mm = parse_dir(parent_dir,sub_dir,lmdbData_train)
