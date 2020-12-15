@@ -106,27 +106,26 @@ class PointGNN(nn.Module):
                     ) for i in range(self.T)
                 ])
 
-    def _getTimeEdges(self,x,adj,state):
+    def _getTimeEdges(self,x, xi_delta, adj,state):
         xj = x.unsqueeze(-2)
-        xj = xj.repeat(1,1,x.size(-2),1)
+        xj = xj.repeat(1,1, x.size(-2),1)
 
-        xi = x.unsqueeze(-2)
-        xitemp = xi.clone()
+        xi = xi_delta.unsqueeze(-3)
+        # xitemp = xi.clone()
 
-        state = state.unsqueeze(-3)
-        statetemp = state.clone()
+        state = state.unsqueeze(-2)
+        # statetemp = state.clone()
 
         # for i in range(x.size(-2)-1):
         #     xi = torch.cat((xi,xitemp),dim=-2)
         #     state = torch.cat((state,statetemp),dim=-3)
-        xi = xi.repeat(1,1, x.size(-2),1)
-        state = state.repeat(1, x.size(-2) ,1 ,1)
+        xi = xi.repeat(1,x.size(-2),1,1)
+        state = state.repeat(1, 1,x.size(-2) ,1)
 
-        xi[~adj] = 0
         xi[adj] = xj[adj] - xi[adj]
 
-        state[~adj] = 0
         xi = torch.cat((xi, state),dim=-1)
+        xi[~adj] = 0
         return xi
 
     def _mlp_forward(self,x,state):
@@ -140,7 +139,7 @@ class PointGNN(nn.Module):
         for t in range(self.T):
             delta = self.MLP_h[t](state)
             xi_delta = x - delta
-            eij_input = self._getTimeEdges(xi_delta, adj, state)
+            eij_input = self._getTimeEdges(x, xi_delta, adj, state)
             eij_output = self.MLP_f[t](eij_input)
             eij_output[~adj] = 0
             eij_output = torch.max(eij_output,dim=-2)[0]
@@ -164,7 +163,7 @@ class PointGNN(nn.Module):
             state = state.permute(0,2,1)
 
             xi_delta = x - delta
-            eij_input = self._getTimeEdges(xi_delta, adj, state)
+            eij_input = self._getTimeEdges(x, xi_delta, adj, state)
             eij_input = eij_input.view(-1,eij_input.size(3),eij_input.size(1)*eij_input.size(2))
 
             eij_output = self.MLP_f[t](eij_input)
@@ -187,7 +186,7 @@ class PointGNN(nn.Module):
 
 
 class HAR_PointGNN(nn.Module):
-    def __init__(self,r = 0.5,output_dim = 5, T = 3,conv1d_or_mlp = 'conv1d',state_dim = 3):
+    def __init__(self,r = 0.5,output_dim = 5, T = 3,conv1d_or_mlp = 'mlp',state_dim = 3):
         super(HAR_PointGNN, self).__init__()
         self.pgnn = TimeDistributed(PointGNN(T=T, r=r,conv1d_or_mlp = conv1d_or_mlp, state_dim = state_dim))
 
@@ -212,7 +211,7 @@ def test_point_gnn():
     a = torch.randn(60,42,3).cuda()
     s = torch.randn(60,42,8).cuda()
 
-    model = PointGNN().cuda()
+    model = PointGNN(state_dim = 8).cuda()
     print(model(a,s).size())
 
 def test_conv_mlp():
@@ -235,8 +234,8 @@ if __name__ == '__main__':
     # a = torch.randn(60,42,3).cuda()
     # model = PointGNN().cuda()
     # a = torch.randn(2,42,3) # getdistance
-    # test_point_gnn()
-    test_conv_mlp()
+    test_point_gnn()
+    # test_conv_mlp()
     # a = torch.randn(2,42,3)
     # adj = torch.randn(2,42,42)
     # adj = adj<0.04

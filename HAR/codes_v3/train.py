@@ -16,11 +16,11 @@ def test_acc(model, dataset, batch_size):
 
     test_correct = 0
     for data in dataloader:
-        input, target = data[0].to(device), data[1].to(device)
-        output = model(input)
+        inputs, states, targets = data[0].to(device), data[1].to(device), data[2].to(device)
+        outputs = model(inputs, states)
 
-        _, pred = torch.max(output, 1)
-        test_correct += torch.sum(pred == target)
+        _, pred = torch.max(outputs, 1)
+        test_correct += torch.sum(pred == targets)
         # print(test_correct)
     del dataloader
     print("Test Accuracy {:.4f}%".format(100.0*test_correct/len(dataset)))
@@ -28,18 +28,18 @@ def test_acc(model, dataset, batch_size):
 
 
 if __name__ == '__main__':
-    batch_size = 5
-    test_batch = 10
-    learning_rate = 0.0001
+    batch_size = 7
+    test_batch = 15
+    learning_rate = 0.001
 
     epoch_num = 100
 
-    dataset_test = MyDataset('../Data/lmdbData_test')
+    dataset_test = MyDataset('../Data/lmdbData_test', padding='zero')
 
-    dataset = MyDataset('../Data/lmdbData_train')
+    dataset = MyDataset('../Data/lmdbData_train',padding='zero')
     train_loader = DataLoader(dataset = dataset,batch_size=batch_size,shuffle=True)
 
-    model = HAR_PointGNN(r = 0.0005, T=3)
+    model = HAR_PointGNN(r = 0.0005, T=3, state_dim=8)
     model.to(device)
 
     if os.path.exists('./models/HAR_PointGNN.pkl'):
@@ -53,13 +53,12 @@ if __name__ == '__main__':
     for epoch in range(1,epoch_num+1):
         test_acc(model,dataset_test,test_batch)
         model.train()
-        scheduler.step()
         epoch_loss = 0
 
         for batch, data in enumerate(train_loader):
-            input, target = data[0].to(device), data[1].to(device)
-            output = model(input)
-            loss = crossloss(output,target)
+            inputs, states, targets = data[0].to(device), data[1].to(device), data[2].to(device)
+            outputs = model(inputs,states)
+            loss = crossloss(outputs,targets)
 
             adam.zero_grad()
             loss.backward()
@@ -67,6 +66,7 @@ if __name__ == '__main__':
             epoch_loss += loss
 
             # print('epoch:{}\t batch:{}/{}\t batch loss:{:.4f}'.format(epoch,batch,len(train_loader),loss))
+        scheduler.step()
         print('epoch:{}\t epoch loss:{:.4f}'.format(epoch,epoch_loss))
         torch.save(model.state_dict(), "./models/HAR_PointGNN.pkl")
 
