@@ -29,6 +29,8 @@ class PointGNN(nn.Module):
         self.GetDis = getdistance
         self.conv1d_or_mlp = conv1d_or_mlp
         self.state_dim = state_dim
+
+        self.hardsig = nn.Hardsigmoid()
         
         if self.conv1d_or_mlp == 'mlp':
             # input(N, 42, 3) output(N, 42, 3)
@@ -147,10 +149,10 @@ class PointGNN(nn.Module):
         xi = xi.repeat(1,x.size(-2),1,1)
         state = state.repeat(1, 1,x.size(-2) ,1)
 
-        xi = xj - xi # xi[adj] = xj[adj] - xi[adj]
+        xi = xj - xi
 
         xi = torch.cat((xi, state),dim=-1)
-        xi[~adj] = 0
+        xi = torch.mul(xi, adj)
         return xi
 
     def _mlp_forward(self,x,state):
@@ -160,22 +162,20 @@ class PointGNN(nn.Module):
         # print(count_edge.size(),sum_edge)
 
         adj = dis < self.r
+        adj = adj.unsqueeze(-1)
 
         for t in range(self.T):
             delta = self.MLP_h[t](state)
             xi_delta = x - delta
             eij_input = self._getTimeEdges(x, xi_delta, adj, state)
             eij_output = self.MLP_f[t](eij_input)
-            e_delta = self.MLP_r[t](eij_output).view(-1, eij_output.size(1), eij_output.size(2))
-            print(e_delta.mean())
-            e_delta = e_delta + adj
-            adj = e_delta >=1
+            e_delta = self.MLP_r[t](eij_output).view(-1, eij_output.size(1), eij_output.size(2), 1)
 
-            eij_output[~adj] = 0
+            adj = self.hardsig(e_delta + adj)
+            eij_output = torch.mul(eij_output, adj)
             eij_output = torch.max(eij_output,dim=-2)[0]
 
             state = self.MLP_g[t](eij_output) + state
-
         return state
 
     def _conv1d_forward(self,x, state):
@@ -185,6 +185,7 @@ class PointGNN(nn.Module):
         # print(count_edge.size(),sum_edge)
 
         adj = dis < self.r
+        adj = adj.unsqueeze(-1)
 
         for t in range(self.T):
             state = state.permute(0,2,1)
@@ -198,15 +199,14 @@ class PointGNN(nn.Module):
 
             eij_output = self.MLP_f[t](eij_input)
             e_delta = self.MLP_r[t](eij_output)
-
             eij_output = eij_output.view(-1,eij_output.size(1),x.size(1),x.size(1))
 
             e_delta = e_delta.view(adj.size())
-            e_delta = e_delta + adj
-            adj = e_delta >=1
+            adj = self.hardsig(e_delta + adj)
 
             eij_output = eij_output.permute(0,2,3,1)
-            eij_output[~adj] = 0
+            eij_output = torch.mul(eij_output, adj)
+
             eij_output = torch.max(eij_output,dim=-2)[0]
             eij_output= eij_output.permute(0,2,1)
 
@@ -260,7 +260,7 @@ def test_conv_mlp():
     print(model_mlp(a,s).size(),model_conv1d(a,s).size())
 
     t1 = time.time()
-    y = model_mlp(a,s)
+    model_mlp(a,s)
     t2 = time.time()
     model_conv1d(a,s)
     t3 = time.time()
@@ -272,7 +272,7 @@ if __name__ == '__main__':
     # a = torch.randn(60,42,3).cuda()
     # model = PointGNN().cuda()
     # a = torch.randn(2,42,3) # getdistance
-    test_point_gnn()
+    # test_point_gnn()
     test_conv_mlp()
     # a = torch.randn(2,42,3)
     # adj = torch.randn(2,42,42)
