@@ -9,7 +9,6 @@ from PointGNN_boost import HAR_PointGNN
 device = torch.device("cuda:2" if torch.cuda.is_available() else "cpu")
 
 
-
 def test_acc(model, dataset, batch_size):
     dataloader = DataLoader(dataset = dataset,batch_size=batch_size,shuffle=False)
     model.eval()
@@ -29,7 +28,7 @@ def test_acc(model, dataset, batch_size):
 
 if __name__ == '__main__':
     batch_size = 7
-    test_batch = 15
+    test_batch = 14
     learning_rate = 0.001
 
     epoch_num = 100
@@ -47,10 +46,10 @@ if __name__ == '__main__':
         print("load model sucessfully")
 
     adam = torch.optim.Adam(model.parameters(), lr=learning_rate)
-    scheduler = torch.optim.lr_scheduler.StepLR(adam, step_size=1, gamma=0.8)
+    scheduler = torch.optim.lr_scheduler.StepLR(adam, step_size=1, gamma=0.98)
 
     crossloss = nn.CrossEntropyLoss()
-    for epoch in range(8,epoch_num+1):
+    for epoch in range(1, epoch_num+1):
         test_acc(model,dataset_test,test_batch)
         model.train()
         epoch_loss = 0

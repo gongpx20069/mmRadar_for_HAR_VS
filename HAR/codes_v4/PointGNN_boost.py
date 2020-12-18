@@ -21,6 +21,19 @@ def getdistance(a):
     distance = torch.sum((b-c)**2,dim=-1)
     return distance.view(-1,a.size(-2),a.size(-2))
 
+class CreateEdges(nn.Module):
+    def __init__(self):
+        # 将hard sigmoid 放在 [-1, 1]
+        super(CreateEdges, self).__init__()
+        self.hardsig = nn.Hardsigmoid()
+
+    def forward(self, adj):
+        # print(self.training)
+        if self.training:
+            return self.hardsig(3*adj)
+        else:
+            return adj > 0
+
 class PointGNN(nn.Module):
     def __init__(self, T=3, r=0.05, conv1d_or_mlp = 'mlp', state_dim = 3):
         super(PointGNN, self).__init__()
@@ -30,7 +43,7 @@ class PointGNN(nn.Module):
         self.conv1d_or_mlp = conv1d_or_mlp
         self.state_dim = state_dim
 
-        self.hardsig = nn.Hardsigmoid()
+        self.hardsig = CreateEdges()
         
         if self.conv1d_or_mlp == 'mlp':
             # input(N, 42, 3) output(N, 42, 3)
