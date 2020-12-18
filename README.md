@@ -485,13 +485,56 @@ Test Accuracy 91.7181%
 
 #### 4.5 HAR/code_v3(TDPointGNN_boost+LSTM)
 
-我们修改了PointGNN的更新方式。
+我们修改了PointGNN的更新方式$T = 3,r=5,learning\,rate=0.001,optim_{LR}=0.8,state_dim=8$，在每帧图像都得到[42, 8]个状态值后，我们又对8个状态映射为[42, 128]。取最大后的结果为[128]输入Bi-LSTM。
 
 更新公式如下：
 $$
 \Delta x_i^t = MLP_{h}^{t}(s_i^t) \\
 e_{ij}^t = MLP_f^t([x_j-x_i + \Delta x_i^t, s_j^t]) \\
-\Delta E^t = MLP_r^t(e_{ij}^t)\\
-E^t = sign(E^{t-1} + \Delta E^t -1) \\
+\Delta A^t = MLP_r^t(e_{ij}^t) \\
+A^{(t+1)} = hard\_sigmoid(3*(A^t + \Delta A^t)) \\
 s_i^{t+1} = MLP_g^t(Max\{e_{ij}|(i,j) \in E^t\})+s_i^t
 $$
+
+在网络推断时，$A^{t+1}$的求取方式更改为：
+$$
+A^{t+1} =\{A_{ij}^{t+1}=1|A_{ij}^t+\Delta A_{ij}^t > 0\}
+$$
+
+
+最终的结果如下：
+
+```python
+epoch:42         epoch loss:2212.4436    learning rate:0.00042805066795449306
+Test Accuracy 94.2729%
+epoch:43         epoch loss:2208.4946    learning rate:0.0004194896545954032
+Test Accuracy 96.9680%
+epoch:44         epoch loss:2212.3975    learning rate:0.0004110998615034951
+Test Accuracy 95.4239%
+epoch:45         epoch loss:2207.8750    learning rate:0.00040287786427342523
+Test Accuracy 95.4520%
+epoch:46         epoch loss:2208.2219    learning rate:0.00039482030698795675
+Test Accuracy 95.6204%
+epoch:47         epoch loss:2211.0491    learning rate:0.0003869239008481976
+Test Accuracy 94.9467%
+epoch:48         epoch loss:2209.0977    learning rate:0.0003791854228312336
+Test Accuracy 95.3959%
+epoch:49         epoch loss:2212.6357    learning rate:0.00037160171437460894
+Test Accuracy 95.6204%
+epoch:50         epoch loss:2207.3765    learning rate:0.00036416968008711674
+Test Accuracy 95.2836%
+epoch:51         epoch loss:2207.7761    learning rate:0.0003568862864853744
+Test Accuracy 94.8624%
+epoch:52         epoch loss:2207.7495    learning rate:0.0003497485607556669
+Test Accuracy 94.6098%
+epoch:53         epoch loss:2207.8184    learning rate:0.00034275358954055353
+Test Accuracy 95.0028%
+epoch:54         epoch loss:2209.1448    learning rate:0.00033589851774974244
+Test Accuracy 94.0483%
+epoch:55         epoch loss:2207.2847    learning rate:0.0003291805473947476
+Test Accuracy 95.1151%
+epoch:56         epoch loss:2206.5386    learning rate:0.0003225969364468526
+Test Accuracy 94.6378%
+```
+
+在MMPoint-GNN中，我们的方法很快达到了96.9680%的准确率，超过了code_v中的93%，目前是效果最好的网络。
