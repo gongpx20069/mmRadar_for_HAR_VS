@@ -16,9 +16,8 @@ class Sub_PointNet(nn.Module):
         return out
 
 
-
 class HAR_model(nn.Module):
-    def __init__(self, output_dim=5):
+    def __init__(self, output_dim=5, frame_num = 60):
         super(HAR_model, self).__init__()
         # 1st layer group
         self.pointnet = TimeDistributed(
@@ -30,8 +29,8 @@ class HAR_model(nn.Module):
         # embedding_dim, hidden_size, num_layers
         self.lstm_net = nn.LSTM(1024, 16,num_layers=1, dropout=0,bidirectional=True)
         self.dense = nn.Sequential(
-            nn.Linear(1920,output_dim),
-            nn.Softmax(),
+            nn.Linear(frame_num*2*16,output_dim),
+            # nn.Softmax(),
             )
 
     def forward(self, data):
@@ -46,7 +45,7 @@ class HAR_model(nn.Module):
 
 
 if __name__ == '__main__':
-    a = torch.randn(2,60,42,3)
+    a = torch.randn(2,20,40,3)
     model = HAR_model()
 
     print(model(a))

@@ -7,10 +7,10 @@ import torch
 import pickle
 
 class MyDataset(Dataset):
-    def __init__(self, data_dir, transform=None, padding='repeat', extra=True):
+    def __init__(self, data_dir, transform=None, padding='repeat'):
         # padding: {repeat, zero}
         self.padding=padding
-        self.extra=extra # feature including range, velocity... if set True
+        # self.extra=extra # feature including range, velocity... if set True
         self.data_dir = data_dir
         self.transform = transform
         self.lmdbData=LmdbData(data_dir)
@@ -37,14 +37,15 @@ class MyDataset(Dataset):
             else:
                 print('wrang padding type!')
                 exit(0)
-        if not self.extra:
-            data=data[:,:,:3]
+        inputs=data[:,:,:3]
         if self.transform:
             data=self.transform(data)
+            inputs = self.transform(inputs)
         else:
             data=torch.tensor(data).float()
+            inputs = torch.tensor(inputs).float()
         label=torch.tensor(y).long()
-        return data, label
+        return inputs, data, label
 
 class LmdbData:
     def __init__(self,dir,map_size = 1):

@@ -51,8 +51,10 @@ class PointGNN(nn.Module):
             PointDistributed(
                 nn.Sequential(
                     nn.Linear(state_dim,64),
+                    # nn.BatchNorm1d(64),
                     nn.ReLU(),
                     nn.Linear(64,128),
+                    # nn.BatchNorm1d(128),
                     nn.ReLU(),
                     nn.Linear(128,3),
                     ) 
@@ -63,10 +65,13 @@ class PointGNN(nn.Module):
                 PointDistributed(
                     nn.Sequential(
                         nn.Linear(state_dim+3,64),
+                        # nn.BatchNorm1d(64),
                         nn.ReLU(),
                         nn.Linear(64,128),
+                        # nn.BatchNorm1d(128),
                         nn.ReLU(),
                         nn.Linear(128,128),
+                        # nn.BatchNorm1d(128),
                         nn.ReLU(),
                         ) 
                     ) for i in range(self.T)
@@ -77,8 +82,10 @@ class PointGNN(nn.Module):
                 PointDistributed(
                     nn.Sequential(
                         nn.Linear(128, 64),
+                        # nn.BatchNorm1d(64),
                         nn.ReLU(),
                         nn.Linear(64, 32),
+                        # nn.BatchNorm1d(32),
                         nn.ReLU(),
                         nn.Linear(32, 1)
                         ) 
@@ -91,10 +98,13 @@ class PointGNN(nn.Module):
                 PointDistributed(
                     nn.Sequential(
                         nn.Linear(128,64),
+                        # nn.BatchNorm1d(64),
                         nn.ReLU(),
                         nn.Linear(64,32),
+                        # nn.BatchNorm1d(32),
                         nn.ReLU(),
                         nn.Linear(32,state_dim),
+                        # nn.BatchNorm1d(state_dim),
                         nn.ReLU(),
                         )
                     ) for i in range(self.T)
@@ -173,8 +183,10 @@ class PointGNN(nn.Module):
         # count_edge = torch.where(dis<self.r, torch.full_like(dis, 1), torch.full_like(dis, 0))
         # sum_edge = torch.mean(torch.sum(count_edge,dim=-1))
         # print(count_edge.size(),sum_edge)
-
-        adj = dis < self.r
+        if self.r<0:
+            adj = torch.full_like(dis,1)
+        else:
+            adj = dis < self.r
         adj = adj.unsqueeze(-1)
 
         for t in range(self.T):
@@ -197,7 +209,10 @@ class PointGNN(nn.Module):
         # sum_edge = torch.mean(torch.sum(count_edge,dim=-1))
         # print(count_edge.size(),sum_edge)
 
-        adj = dis < self.r
+        if self.r<0:
+            adj = torch.full_like(dis,1)
+        else:
+            adj = dis < self.r
         adj = adj.unsqueeze(-1)
 
         for t in range(self.T):
@@ -237,22 +252,23 @@ class PointGNN(nn.Module):
 
 
 class HAR_PointGNN(nn.Module):
-    def __init__(self,r = 0.5,output_dim = 5, T = 3,conv1d_or_mlp = 'mlp',state_dim = 3):
+    def __init__(self,r = 0.5,output_dim = 5, T = 3, conv1d_or_mlp = 'mlp', state_dim = 3, frame_num=60, extend = 128, lstm_hidden = 16):
         super(HAR_PointGNN, self).__init__()
         self.pgnn = TimeDistributed(PointGNN(T=T, r=r,conv1d_or_mlp = conv1d_or_mlp, state_dim = state_dim))
 
         self.MLP_max = PointDistributed(
                     nn.Sequential(
-                        nn.Linear(8,64),
+                        nn.Linear(state_dim,int(extend/2)),
+                        # nn.BatchNorm1d(int(extend/2)),
                         nn.ReLU(),
-                        nn.Linear(64,128),
+                        nn.Linear(int(extend/2),extend),
                         )
                     )
 
-        self.lstm_net = nn.LSTM(128, 16,num_layers=1, dropout=0,bidirectional=True)
+        self.lstm_net = nn.LSTM(extend, lstm_hidden,num_layers=1, dropout=0,bidirectional=True)
         self.dense = nn.Sequential(
-            nn.Linear(1920,output_dim),
-            nn.Softmax(dim=-1),
+            nn.Linear(2*lstm_hidden*frame_num,output_dim),
+            # nn.Softmax(dim=-1),
             )
 
     def forward(self,x,state):
@@ -276,19 +292,22 @@ def test_point_gnn():
     print(model(a,s).size())
 
 def test_conv_mlp():
-    a = torch.randn(2,60,42,3).cuda()
-    s = torch.randn(2,60,42,8).cuda()
-    model_mlp = HAR_PointGNN(r = 0.2,conv1d_or_mlp='mlp',state_dim = 8).cuda().eval()
-    model_conv1d = HAR_PointGNN(r = 0.2,conv1d_or_mlp = 'conv1d',state_dim=8).cuda().eval()
-    print(model_mlp(a,s).size(),model_conv1d(a,s).size())
+    a = torch.randn(1,60,42,3).cuda()
+    s = torch.randn(1,60,42,12).cuda()
+    model_mlp = HAR_PointGNN(r = -1,conv1d_or_mlp='mlp',state_dim = 12).cuda().eval()
+    # model_conv1d = HAR_PointGNN(r = 0.2,conv1d_or_mlp = 'conv1d',state_dim=12).cuda().eval()
+    print(model_mlp(a,s).size())
 
+    a = torch.randn(1,60,42,3).cuda()
     t1 = time.time()
     model_mlp(a,s)
     t2 = time.time()
-    model_conv1d(a,s)
+    # model_conv1d(a,s)
     t3 = time.time()
 
     print('mlp',t2-t1,'conv1d',t3-t2)
+    print('mlp',1/(t2-t1),'conv1d',t3-t2)
+
 
 if __name__ == '__main__':
     # a = torch.randn(2,60,42,3).cuda()

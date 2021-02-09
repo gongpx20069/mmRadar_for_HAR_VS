@@ -79,8 +79,8 @@ sub_dirs=['boxing','jack','jump','squats','walk']
 
 
 if __name__=="__main__":
-    lmdbData_train=LmdbData('./Data/lmdbData_train',map_size = 2)
-    lmdbData_test = LmdbData('./Data/lmdbData_test', map_size=2)
+    lmdbData_train=LmdbData('../Data/lmdbData_train',map_size = 2)
+    lmdbData_test = LmdbData('../Data/lmdbData_test', map_size=2)
     len_max_min = [0, 1e10]
     for sub_dir in sub_dirs:
         len_mm = parse_dir(parent_dir,sub_dir,lmdbData_train)
@@ -89,7 +89,4 @@ if __name__=="__main__":
         len_mm = parse_dir(parent_dir2,sub_dir,lmdbData_test)
         len_max_min = [max(len_mm[0], len_max_min[0]), min(len_mm[1], len_max_min[1])]
     print(len_max_min)
-
-
-
 

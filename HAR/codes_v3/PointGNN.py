@@ -186,14 +186,14 @@ class PointGNN(nn.Module):
 
 
 class HAR_PointGNN(nn.Module):
-    def __init__(self,r = 0.5,output_dim = 5, T = 3,conv1d_or_mlp = 'mlp',state_dim = 3):
+    def __init__(self,r = 0.5,output_dim = 5, T = 3,conv1d_or_mlp = 'mlp',state_dim = 3, frame_num=60):
         super(HAR_PointGNN, self).__init__()
         self.pgnn = TimeDistributed(PointGNN(T=T, r=r,conv1d_or_mlp = conv1d_or_mlp, state_dim = state_dim))
 
         self.lstm_net = nn.LSTM(336, 16,num_layers=1, dropout=0,bidirectional=True)
         self.dense = nn.Sequential(
-            nn.Linear(1920,output_dim),
-            nn.Softmax(dim=-1),
+            nn.Linear(frame_num*2*16,output_dim),
+            # nn.Softmax(dim=-1),
             )
 
     def forward(self,x,state):

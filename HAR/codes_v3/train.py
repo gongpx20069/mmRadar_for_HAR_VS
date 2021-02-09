@@ -30,7 +30,7 @@ def test_acc(model, dataset, batch_size):
 if __name__ == '__main__':
     batch_size = 7
     test_batch = 15
-    learning_rate = 0.001
+    learning_rate = 0.0001
 
     epoch_num = 100
 
@@ -47,10 +47,10 @@ if __name__ == '__main__':
         print("load model sucessfully")
 
     adam = torch.optim.Adam(model.parameters(), lr=learning_rate)
-    scheduler = torch.optim.lr_scheduler.StepLR(adam, step_size=1, gamma=0.6)
+    scheduler = torch.optim.lr_scheduler.StepLR(adam, step_size=1, gamma=0.9)
 
     crossloss = nn.CrossEntropyLoss()
-    for epoch in range(1,epoch_num+1):
+    for epoch in range(49,epoch_num+1):
         test_acc(model,dataset_test,test_batch)
         model.train()
         epoch_loss = 0
@@ -67,6 +67,6 @@ if __name__ == '__main__':
 
             # print('epoch:{}\t batch:{}/{}\t batch loss:{:.4f}'.format(epoch,batch,len(train_loader),loss))
         scheduler.step()
-        print('epoch:{}\t epoch loss:{:.4f}'.format(epoch,epoch_loss))
+        print('epoch:{}\t epoch loss:{:.4f} \t learning rate:{}'.format(epoch, epoch_loss, adam.param_groups[0]['lr']))
         torch.save(model.state_dict(), "./models/HAR_PointGNN.pkl")
 

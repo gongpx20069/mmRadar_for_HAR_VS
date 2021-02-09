@@ -16,7 +16,7 @@ def test_acc(model, dataset):
 
     test_correct = 0
     for data in dataloader:
-        input, target = data[0].to(device), data[1].to(device)
+        input, target = data[0].to(device), data[2].to(device)
         output = model(input)
 
         _, pred = torch.max(output, 1)
@@ -28,13 +28,13 @@ def test_acc(model, dataset):
 
 if __name__ == '__main__':
     batch_size = 80
-    learning_rate = 0.0000005
+    learning_rate = 0.0000001
 
     epoch_num = 100
 
-    dataset_test = MyDataset('./Data/lmdbData_test')
+    dataset_test = MyDataset('../Data/lmdbData_test')
 
-    dataset = MyDataset('./Data/lmdbData_train')
+    dataset = MyDataset('../Data/lmdbData_train')
     train_loader = DataLoader(dataset = dataset,batch_size=batch_size,shuffle=True)
 
     model = HAR_model()
@@ -45,7 +45,7 @@ if __name__ == '__main__':
         print("load model sucessfully")
 
     adam = torch.optim.Adam(model.parameters(), lr=learning_rate)
-    scheduler = torch.optim.lr_scheduler.StepLR(adam, step_size=1, gamma=0.98)
+    scheduler = torch.optim.lr_scheduler.StepLR(adam, step_size=1, gamma=0.6)
 
     crossloss = nn.CrossEntropyLoss()
     for epoch in range(73,epoch_num):
@@ -55,7 +55,7 @@ if __name__ == '__main__':
         epoch_loss = 0
 
         for batch, data in enumerate(train_loader):
-            input, target = data[0].to(device), data[1].to(device)
+            input, target = data[0].to(device), data[2].to(device)
             output = model(input)
             loss = crossloss(output,target)
 

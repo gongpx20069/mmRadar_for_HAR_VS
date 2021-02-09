@@ -1,0 +1,217 @@
+Test Accuracy 21.4486%
+epoch:1  epoch loss:3741.3347    learning rate:0.00098
+Test Accuracy 30.7131%
+epoch:2  epoch loss:3724.7051    learning rate:0.0009603999999999999
+Test Accuracy 42.8130%
+epoch:3  epoch loss:3507.3733    learning rate:0.0009411919999999999
+Test Accuracy 50.0561%
+epoch:4  epoch loss:3250.3027    learning rate:0.0009223681599999998
+Test Accuracy 51.2633%
+epoch:5  epoch loss:2917.0581    learning rate:0.0009039207967999998
+Test Accuracy 73.0769%
+epoch:6  epoch loss:2660.4204    learning rate:0.0008858423808639998
+Test Accuracy 77.5126%
+epoch:7  epoch loss:2579.1931    learning rate:0.0008681255332467198
+Test Accuracy 79.7305%
+epoch:8  epoch loss:2558.0095    learning rate:0.0008507630225817853
+Test Accuracy 79.1971%
+epoch:9  epoch loss:2525.8286    learning rate:0.0008337477621301496
+Test Accuracy 80.1516%
+epoch:10         epoch loss:2513.5330    learning rate:0.0008170728068875465
+Test Accuracy 82.0887%
+epoch:11         epoch loss:2492.1484    learning rate:0.0008007313507497956
+Test Accuracy 84.5312%
+epoch:12         epoch loss:2477.3271    learning rate:0.0007847167237347997
+Test Accuracy 87.5070%
+epoch:13         epoch loss:2444.2705    learning rate:0.0007690223892601037
+Test Accuracy 84.8400%
+epoch:14         epoch loss:2412.8257    learning rate:0.00036419414749016
+Test Accuracy 75.2667%
+epoch:15         epoch loss:2391.3809    learning rate:0.0007385691026454036
+Test Accuracy 86.3841%
+epoch:16         epoch loss:2379.5337    learning rate:0.0007237977205924955
+Test Accuracy 87.5632%
+epoch:17         epoch loss:2356.4104    learning rate:0.0007093217661806456
+Test Accuracy 89.7249%
+epoch:18         epoch loss:2348.1772    learning rate:0.0006951353308570327
+Test Accuracy 88.7423%
+epoch:19         epoch loss:2339.9453    learning rate:0.000681232624239892
+Test Accuracy 89.9775%
+epoch:20         epoch loss:2312.9041    learning rate:0.0006676079717550942
+Test Accuracy 91.1567%
+epoch:21         epoch loss:2318.9724    learning rate:0.0006542558123199924
+Test Accuracy 88.1527%
+epoch:22         epoch loss:2312.3320    learning rate:0.0006411706960735925
+Test Accuracy 88.7423%
+epoch:23         epoch loss:2314.4573    learning rate:0.0006283472821521206
+Test Accuracy 90.4829%
+epoch:24         epoch loss:2308.3689    learning rate:0.0006157803365090782
+Test Accuracy 91.2409%
+epoch:25         epoch loss:2312.6472    learning rate:0.0006034647297788967
+Test Accuracy 92.1673%
+epoch:26         epoch loss:2301.6650    learning rate:0.0005913954351833187
+Test Accuracy 90.2583%
+epoch:27         epoch loss:2302.4434    learning rate:0.0005795675264796523
+Test Accuracy 91.8866%
+epoch:28         epoch loss:2297.1763    learning rate:0.0005679761759500593
+Test Accuracy 91.8304%
+epoch:29         epoch loss:2298.4604    learning rate:0.0005566166524310581
+Test Accuracy 92.0270%
+epoch:30         epoch loss:2267.4985    learning rate:0.0005454843193824369
+Test Accuracy 91.0444%
+epoch:31         epoch loss:2227.0051    learning rate:0.0005345746329947881
+Test Accuracy 94.7221%
+epoch:32         epoch loss:2220.5796    learning rate:0.0005238831403348923
+Test Accuracy 94.7221%
+epoch:33         epoch loss:2217.8984    learning rate:0.0005134054775281945
+Test Accuracy 95.3959%
+epoch:34         epoch loss:2217.6050    learning rate:0.0005031373679776305
+Test Accuracy 94.6940%
+epoch:35         epoch loss:2218.3308    learning rate:0.0004930746206180779
+Test Accuracy 95.4520%
+epoch:36         epoch loss:2213.4019    learning rate:0.00048321312820571636
+Test Accuracy 95.9854%
+epoch:37         epoch loss:2214.7036    learning rate:0.00047354886564160203
+Test Accuracy 95.3397%
+epoch:38         epoch loss:2212.4895    learning rate:0.00046407788832877
+Test Accuracy 94.8624%
+epoch:39         epoch loss:2209.1919    learning rate:0.00047963305621946
+Test Accuracy 95.4239%
+epoch:40         epoch loss:2214.9099    learning rate:0.0004457004039509507
+Test Accuracy 95.2274%
+epoch:41         epoch loss:2210.8931    learning rate:0.0004367863958719317
+Test Accuracy 95.3678%
+epoch:42         epoch loss:2212.4436    learning rate:0.00042805066795449306
+Test Accuracy 94.2729%
+epoch:43         epoch loss:2208.4946    learning rate:0.0004194896545954032
+Test Accuracy 96.9680%
+epoch:44         epoch loss:2212.3975    learning rate:0.0004110998615034951
+Test Accuracy 95.4239%
+epoch:45         epoch loss:2207.8750    learning rate:0.00040287786427342523
+Test Accuracy 95.4520%
+epoch:46         epoch loss:2208.2219    learning rate:0.00039482030698795675
+Test Accuracy 95.6204%
+epoch:47         epoch loss:2211.0491    learning rate:0.0003869239008481976
+Test Accuracy 94.9467%
+epoch:48         epoch loss:2209.0977    learning rate:0.0003791854228312336
+Test Accuracy 95.3959%
+epoch:49         epoch loss:2212.6357    learning rate:0.00037160171437460894
+Test Accuracy 95.6204%
+epoch:50         epoch loss:2207.3765    learning rate:0.00036416968008711674
+Test Accuracy 95.2836%
+epoch:51         epoch loss:2207.7761    learning rate:0.0003568862864853744
+Test Accuracy 94.8624%
+4367863958719317
+Test Accuracy 95.3678%
+epoch:42         epoch loss:2212.4436    learning rate:0.00042805066795449306
+Test Accuracy 94.2729%
+epoch:43         epoch loss:2208.4946    learning rate:0.0004194896545954032
+Test Accuracy 96.9680%
+epoch:44         epoch loss:2212.3975    learning rate:0.0004110998615034951
+Test Accuracy 95.4239%
+epoch:45         epoch loss:2207.8750    learning rate:0.00040287786427342523
+Test Accuracy 95.4520%
+epoch:46         epoch loss:2208.2219    learning rate:0.00039482030698795675
+Test Accuracy 95.6204%
+epoch:47         epoch loss:2211.0491    learning rate:0.0003869239008481976
+Test Accuracy 94.9467%
+epoch:48         epoch loss:2209.0977    learning rate:0.0003791854228312336
+Test Accuracy 95.3959%
+epoch:49         epoch loss:2212.6357    learning rate:0.00037160171437460894
+Test Accuracy 95.6204%
+epoch:50         epoch loss:2207.3765    learning rate:0.00036416968008711674
+Test Accuracy 95.2836%
+epoch:51         epoch loss:2207.7761    learning rate:0.0003568862864853744
+Test Accuracy 94.8624%
+epoch:52         epoch loss:2207.7495    learning rate:0.0003497485607556669
+Test Accuracy 94.6098%
+epoch:53         epoch loss:2207.8184    learning rate:0.00034275358954055353
+Test Accuracy 95.0028%
+epoch:54         epoch loss:2209.1448    learning rate:0.00033589851774974244
+Test Accuracy 94.0483%
+epoch:55         epoch loss:2207.2847    learning rate:0.0003291805473947476
+Test Accuracy 95.1151%
+epoch:56         epoch loss:2206.5386    learning rate:0.0003225969364468526
+Test Accuracy 94.6378%
+epoch:57         epoch loss:2208.1565    learning rate:0.00031614499771791553
+Test Accuracy 94.9747%
+epoch:58         epoch loss:2205.8403    learning rate:0.0003098220977635572
+Test Accuracy 94.8063%
+epoch:59         epoch loss:2207.7505    learning rate:0.00030362565580828606
+Test Accuracy 95.0309%
+epoch:60         epoch loss:2206.3689    learning rate:0.0002975531426921203
+Test Accuracy 95.0028%
+epoch:61         epoch loss:2206.5662    learning rate:0.0002916020798382779
+Test Accuracy 95.3397%
+epoch:62         epoch loss:2206.6240    learning rate:0.0002857700382415123
+Test Accuracy 95.5362%
+epoch:63         epoch loss:2206.2192    learning rate:0.0002800546374766821
+Test Accuracy 95.3397%
+epoch:64         epoch loss:2206.9629    learning rate:0.000445354472714845
+Test Accuracy 95.9854%
+epoch:65         epoch loss:2206.9690    learning rate:0.0002689644738326055
+Test Accuracy 94.9467%
+epoch:66         epoch loss:2205.9873    learning rate:0.00026358518435595335
+Test Accuracy 95.5643%
+epoch:67         epoch loss:2205.3962    learning rate:0.00025831348066883425
+Test Accuracy 95.0028%
+epoch:68         epoch loss:2207.4536    learning rate:0.00025314721105545757
+Test Accuracy 96.2661%
+epoch:69         epoch loss:2205.4119    learning rate:0.00024808426683434843
+Test Accuracy 95.7047%
+epoch:70         epoch loss:2205.7725    learning rate:0.00024312258149766146
+Test Accuracy 95.4801%
+epoch:71         epoch loss:2206.4529    learning rate:0.00023826012986770823
+Test Accuracy 95.3959%
+epoch:72         epoch loss:2206.6311    learning rate:0.00023349492727035406
+Test Accuracy 95.6204%
+epoch:73         epoch loss:2205.3877    learning rate:0.00022882502872494697
+Test Accuracy 95.5081%
+epoch:74         epoch loss:2205.3704    learning rate:0.00022424852815044804
+Test Accuracy 95.7889%
+epoch:75         epoch loss:2206.6521    learning rate:0.00021976355758743907
+Test Accuracy 96.2942%
+epoch:76         epoch loss:2205.4492    learning rate:0.00021536828643569029
+Test Accuracy 96.4065%
+epoch:77         epoch loss:2205.4980    learning rate:0.00021106092070697648
+Test Accuracy 95.3397%
+epoch:78         epoch loss:2204.8582    learning rate:0.00020683970229283695
+Test Accuracy 95.9573%
+epoch:79         epoch loss:2204.0332    learning rate:0.0002027029082469802
+Test Accuracy 95.9573%
+epoch:80         epoch loss:2204.0032    learning rate:0.0001986488500820406
+Test Accuracy 95.9012%
+epoch:81         epoch loss:2204.0701    learning rate:0.00019467587308039978
+Test Accuracy 95.5081%
+epoch:82         epoch loss:2204.0039    learning rate:0.00019078235561879178
+Test Accuracy 95.6485%
+epoch:83         epoch loss:2203.9937    learning rate:0.00018696670850641594
+Test Accuracy 95.6204%
+epoch:84         epoch loss:2204.0015    learning rate:0.0001832273743362876
+Test Accuracy 95.5362%
+epoch:85         epoch loss:2204.2988    learning rate:0.00017956282684956185
+Test Accuracy 95.8170%
+epoch:86         epoch loss:2204.5684    learning rate:0.0001759715703125706
+Test Accuracy 96.0135%
+epoch:87         epoch loss:2204.0862    learning rate:0.0001724521389063192
+Test Accuracy 96.0977%
+epoch:88         epoch loss:2203.9929    learning rate:0.00016900309612819282
+Test Accuracy 96.1819%
+epoch:89         epoch loss:2203.9917    learning rate:0.00016562303420562897
+Test Accuracy 96.1538%
+epoch:90         epoch loss:2203.9902    learning rate:0.0001623105735215164
+Test Accuracy 96.1258%
+epoch:91         epoch loss:2203.9910    learning rate:0.00015906436205108607
+Test Accuracy 96.0135%
+epoch:92         epoch loss:2204.5327    learning rate:0.00015588307481006434
+Test Accuracy 95.9012%
+epoch:93         epoch loss:2204.2317    learning rate:0.00015276541331386305
+Test Accuracy 96.2661%
+epoch:94         epoch loss:2203.8569    learning rate:0.00014971010504758578
+Test Accuracy 96.5750%
+epoch:95         epoch loss:2203.8208    learning rate:0.00014671590294663406
+Test Accuracy 96.0977%
+epoch:96         epoch loss:2203.9268    learning rate:0.00014378158488770137
+Test Accuracy 95.8450%
+epoch:97         epoch loss:2203.6746    learning rate:0.00014090595318994734
+Test Accuracy 96.2942%
