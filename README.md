@@ -1,6 +1,6 @@
-### 1. 代码
+### 4. 代码
 
-#### 1.1 HAR/code_lstm
+#### 4.1 HAR/code_lstm
 
 这一版的代码主要是作为对比，由于我们之后的论文基本都用了LSTM，因此我们计划是使用相同的配置进行最终效果的对比（尤其是和PointGNN）
 
@@ -41,7 +41,7 @@ epoch:15	 epoch loss:166.5637
 
 
 
-#### 1.2 HAR/code_v1(TDCNN+LSTM)
+#### 4.2 HAR/code_v1(TDCNN+LSTM)
 
 第一版代码主要来源于论文《RadHAR: Human Activity Recognition from Point Clouds Generated through a Millimeter-wave Radar》 在其github代码上修改而来的TD_CNN_LSTM网络（Pytorch版本） 代码地址为：https://github.com/nesl/RadHAR
 
@@ -87,7 +87,7 @@ Test Accuracy 86.9700%
 
 
 
-#### 1.3 HAR/code_v2(TDPointNet+LSTM)
+#### 4.3 HAR/code_v2(TDPointNet+LSTM)
 
 这一版的代码主要使用了PointNet和STN以及BLSTM组合的结构，没有使用点云体素化，而是使用了(batch_size, 60, 42, 3)这样**占用空间很小**，处理很快的点云集合。最终得到的效果如下图（前50个epoch的学习率为0.00001，51-72的学习率为0.000001），**这个版本的代码已经超过了RadHAR论文中90%的最高准确率**：
 
@@ -152,7 +152,7 @@ epoch:78	 epoch loss:137.7148
 Test Accuracy 92.3077%
 ```
 
-#### 1.4 HAR/code_v3(TDPointGNN+LSTM)
+#### 4.4 HAR/code_v3(TDPointGNN+LSTM)
 
 当前版本使用的框架是PointGNN+LSTM
 
@@ -306,7 +306,7 @@ Test Accuracy 91.7181%
 
 其中的最高准确率达到了92.167%，我们在此基础上对点云图神经网络进行了修改，将其连接边也进行了更新。代码如HAR/code_v3。
 
-#### 1.5 HAR/code_v3(TDPointGNN_boost+LSTM)
+#### 4.5 HAR/code_v4(TDPointGNN_boost+LSTM)
 
 我们修改了PointGNN的更新方式$T = 3,r=5,learning\,rate=0.001,optim_{LR}=0.8,state_dim=8$，在每帧图像都得到[42, 8]个状态值后，我们又对8个状态映射为[42, 128]。取最大后的结果为[128]输入Bi-LSTM。
 
@@ -360,4 +360,4 @@ epoch:56         epoch loss:2206.5386    learning rate:0.0003225969364468526
 Test Accuracy 94.6378%
 ```
 
-在MMPoint-GNN中，我们的方法很快达到了96.9680%的准确率，超过了code_v中的93%，目前是效果最好的网络。
+在MMPoint-GNN中，我们的方法很快达到了96.9680%的准确率，超过了code_v3中的93%，目前是效果最好的网络。
