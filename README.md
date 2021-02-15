@@ -3,7 +3,7 @@
 #### 1.1 介绍
 我们提出了一种新的，基于毫米波雷达和图神经网络的行为识别方法，并且在MMActivity和MMGesture两个数据集上进行了测试，并且取得了最先进的效果。
 
-- MMActivity: 提出于论文[《RadHAR: Human Activity Recognition from Point Clouds Generated through a Millimeter-wave Radar》](https://dl.acm.org/doi/10.1145/3349624.3356768)，共分为'boxing','jack','jump','squats','walk'五个类别，数据集地址为[RadHAR](https://github.com/nesl/RadHAR)
+- MMActivity: 提出于论文[《RadHAR: Human Activity Recognition from Point Clouds Generated through a Millimeter-wave Radar》](https://dl.acm.org/doi/10.1145/3349624.3356768)，共分为'boxing','jack','jump','squats','walk'五个类别，数据集地址为[RadHAR](https://github.com/nesl/RadHAR)；
 - [MMGesture](https://github.com/fengxudi/mmWave-gesture-datasets): 第一个开源的基于毫米波雷达的手势识别数据集。将通用的手势分为'knock’, 'lswipe’, 'rswipe’, 'rotate’ 等几个类别，遵循的手势规则为M-Gesture。
 
 #### 1.2 代码说明
